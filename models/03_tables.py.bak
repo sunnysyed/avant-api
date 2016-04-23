@@ -7,6 +7,5 @@ db.define_table('loan_application',
 
 db.define_table('loan_application_attachments',
                 Field('loan_application_id','reference loan_application'),
-                Field('attachment_type', 'string'),
                 Field('image','upload'),
                 Field('image_url','string'))

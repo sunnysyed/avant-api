@@ -16,12 +16,15 @@ def create():
 def upload_attachment():
     loan_application_id = request.vars.loan_application_id
     image = request.vars.image
+    attachment_type = request.vars.attachment_type
     if not loan_application_id:
         raise HTTP(500, response.json({'error' : 'loan_application_id not set'}))
     if not image.filename :
         raise HTTP(500, response.json({'error' : 'image not set'}))
+    if not attachment_type:
+        raise HTTP(500, response.json({'error' : 'attachment_type not set'}))
       
-    row = db.loan_application_attachments.validate_and_insert(loan_application_id=loan_application_id, image=image)
+    row = db.loan_application_attachments.validate_and_insert(loan_application_id=loan_application_id, image=image, attachment_type=attachment_type)
     if (row.errors):
         raise HTTP(500, response.json({'error' : 'Could not upload Attachment please try again.'}))
     row = db.loan_application_attachments(id=row.id)
@@ -33,3 +36,7 @@ def upload_attachment():
 @requires_get
 def loan_types():
     return response.json({"loan_types" : VALID_LOAN_TYPES})
+
+@requires_get
+def attachment_types():
+    return response.json({"attachment_types" : VALID_ATTACHMENT_TYPES})
