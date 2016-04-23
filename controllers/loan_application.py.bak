@@ -25,8 +25,11 @@ def upload_attachment():
     if (row.errors):
         raise HTTP(500, response.json({'error' : 'Could not upload Attachment please try again.'}))
     row = db.loan_application_attachments(id=row.id)
-    return response.json(row)
     data = {}
     data["image_url"] = URL('default','download',args=row["image"],host=True,scheme=True)
     update_result = db(db.loan_application_attachments.id == row.id).validate_and_update(**data)
     return get_profile(db, session.auth_user_id)
+
+@requires_get
+def loan_types():
+    return response.json(VALID_LOAN_TYPES)

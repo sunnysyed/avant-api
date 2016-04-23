@@ -29,3 +29,7 @@ def upload_attachment():
     data["image_url"] = URL('default','download',args=row["image"],host=True,scheme=True)
     update_result = db(db.loan_application_attachments.id == row.id).validate_and_update(**data)
     return get_profile(db, session.auth_user_id)
+
+@requires_get
+def loan_types():
+    return response.json({"loan_types" : VALID_LOAN_TYPES})

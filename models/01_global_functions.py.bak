@@ -1,7 +1,7 @@
 def requires_post(callee):
     def wrapper():
         if request.env.request_method != 'POST':
-            raise HTTP(405, "Method Not Supported")
+            raise HTTP(500, response.json({'error' : 'Method Not Supported'}))
         else:
             return callee()
     return wrapper
@@ -9,7 +9,7 @@ def requires_post(callee):
 def requires_get(callee):
     def wrapper():
         if request.env.request_method != 'GET':
-            raise HTTP(405, "Method Not Supported")
+            raise HTTP(500, response.json({'error' : 'Method Not Supported'}))
         else:
             return callee()
     return wrapper
@@ -17,7 +17,7 @@ def requires_get(callee):
 def requires_get_or_post(callee):
     def wrapper():
         if request.env.request_method not in ['GET','POST']:
-            raise HTTP(405, "Method Not Supported")
+            raise HTTP(500, response.json({'error' : 'Method Not Supported'}))
         else:
             return callee()
     return wrapper
@@ -30,11 +30,11 @@ def requires_valid_token(callee):
         if token_in_header:
             parts = token_in_header.split()
             if parts[0].lower() != 'bearer':
-                raise HTTP(400, u'Invalid JWT header')
+                raise HTTP(401, response.json({'error' : 'Invalid JWT header'}))
             elif len(parts) == 1:
-                raise HTTP(400, u'Invalid JWT header, missing token')
+                raise HTTP(401, response.json({'error' : 'Invalid JWT header, missing token'}))
             elif len(parts) > 2:
-                raise HTTP(400, 'Invalid JWT header, token contains spaces')
+                raise HTTP(401, response.json({'error' : 'Invalid JWT header, token contains spaces'}))
             token = parts[1]
         else:
             token = request.vars._token
@@ -48,7 +48,7 @@ def requires_valid_token(callee):
             session.auth_user_id = auth_user_id
             return callee()
         else:
-            raise HTTP(401, "Not Authorized")            
+            raise HTTP(401, response.json({'error' : 'Not Authorized'}))
     return wrapper
 
 
@@ -61,7 +61,7 @@ def requires_valid_access_code(callee):
         access_code = data.get('access_code', False)
         
         if not (phone_number and access_code):
-            raise HTTP(403, 'Malformed Request')
+            raise HTTP(403, response.json({'error' : 'Malformed Request'}))
     
         oldest_allowed_code = request.utcnow - datetime.timedelta(minutes=VERIFICATION_CODE_EXPIRATION_MINUTES)
     
@@ -78,7 +78,7 @@ def requires_valid_access_code(callee):
         if valid_code:
             return callee()
         else:
-            raise HTTP(401, "Not Authorized")
+            raise HTTP(401, response.json({'error' : 'Not Authorized'}))
     return wrapper
 
 def generate_phone_token(size=5, chars=string.digits):
@@ -102,8 +102,10 @@ def get_profile(db, user_id):
     query = table.loan_application_id.belongs(loan_applications_ids)
     
     loan_application_attachments = db(query).select()
+    return response.json(loan_application_attachments)
     
     loan_application_attachments_ids = [row.id for row in loan_application_attachments]
+    
     
     result["loan_applications"] = []
     

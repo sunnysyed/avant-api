@@ -102,15 +102,14 @@ def get_profile(db, user_id):
     query = table.loan_application_id.belongs(loan_applications_ids)
     
     loan_application_attachments = db(query).select()
-    
-    loan_application_attachments_ids = [row.id for row in loan_application_attachments]
-    
+
     result["loan_applications"] = []
     
     for loan_application in loan_applications:
-        loan_application_attachments = loan_application_attachments.find(lambda r: r.loan_application_id == loan_application.id)
-        loan_application.loan_application_attachments = loan_application_attachments.as_list()
-    
+        loan_application["loan_application_attachments"] = []
+        for loan_application_attachment in loan_application_attachments:
+            if (loan_application_attachment.loan_application_id == loan_application.id):
+                loan_application["loan_application_attachments"].append(loan_application_attachment)    
     result["loan_applications"] = loan_applications
     return response.json(result)
     
