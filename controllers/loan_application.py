@@ -31,6 +31,10 @@ def upload_attachment():
     data = {}
     data["image_url"] = URL('default','download',args=row["image"],host=True,scheme=True)
     update_result = db(db.loan_application_attachments.id == row.id).validate_and_update(**data)
+    data = {}
+    data["application_status"] = "pending"
+    update_result = db(db.loan_application.id == row.loan_application_id).validate_and_update(**data)
+    
     return get_profile(db, session.auth_user_id)
 
 @requires_get

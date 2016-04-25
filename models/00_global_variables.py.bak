@@ -14,7 +14,7 @@ myconf = AppConfig(reload=True)
 
 VALID_APPLICATION_STATUSES = ["incomplete","pending","approved","declined", "deleted"]
 VALID_LOAN_TYPES = ["personal","unsecured", "corprate", "secured"]
-VALID_ATTACHMENT_TYPES = ["W2","voided check", "utility bill"]
+VALID_ATTACHMENT_TYPES = ["W2","Void Check", "Utility Bill"]
 
 
 EXTRA_AUTH_FIELDS = [

@@ -13,7 +13,7 @@ from gluon.tools import Auth, AuthJWT
 myconf = AppConfig(reload=True)
 
 VALID_APPLICATION_STATUSES = ["incomplete","pending","approved","declined", "deleted"]
-VALID_LOAN_TYPES = ["personal","unsecured", "corprate", "secured"]
+VALID_LOAN_TYPES = ["Personal","Unsecured", "Corprate", "Secured"]
 VALID_ATTACHMENT_TYPES = ["W2","Void Check", "Utility Bill"]
 
 

@@ -11,7 +11,7 @@ def register():
         row = db.auth_user.validate_and_insert(password=password,
                                  email=email, last_name=last_name, first_name=first_name)
         if row.errors:
-            raise HTTP(401, response.json({'error' : row.errors}))
+            raise HTTP(401, response.json({'error' : "Email is already Registered"}))
         data = {}
         data["access_token"] = generate_access_token()
         update_result = db(db.auth_user.email == email).validate_and_update(**data)
